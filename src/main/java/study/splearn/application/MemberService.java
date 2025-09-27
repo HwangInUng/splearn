@@ -2,6 +2,7 @@ package study.splearn.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import study.splearn.application.provided.MemberRegister;
 import study.splearn.application.required.EmailSender;
 import study.splearn.application.required.MemberRepository;
@@ -15,6 +16,7 @@ public class MemberService implements MemberRegister {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
+	@Transactional
 	public Member register (MemberRegisterRequest registerRequest) {
 		checkDuplicateEmail(registerRequest.email());
 
