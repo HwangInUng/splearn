@@ -1,29 +1,39 @@
 package study.splearn.domain;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.Assert.state;
 
+@Entity
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Embedded
 	private Email email;
+
 	private String nickname;
+
 	private String passwordHash;
+
+	@Enumerated(EnumType.STRING)
 	private MemberStatus status;
 
-	private Member () {
-
-	}
-
-	public static Member create (MemberCreateReqeust createReqeust, PasswordEncoder passwordEncoder) {
+	public static Member register (MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
 		Member member = new Member();
 
-		member.email = new Email(createReqeust.email());
-		member.nickname = requireNonNull(createReqeust.nickname());
-		member.passwordHash = requireNonNull(passwordEncoder.encode(createReqeust.passwordHash()));
+		member.email = new Email(registerRequest.email());
+		member.nickname = requireNonNull(registerRequest.nickname());
+		member.passwordHash = requireNonNull(passwordEncoder.encode(registerRequest.passwordHash()));
 		member.status = MemberStatus.PENDING;
 
 		return member;

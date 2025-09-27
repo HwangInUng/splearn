@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static study.splearn.domain.MemberFixture.*;
 
 class MemberTest {
 	Member member;
@@ -13,21 +14,8 @@ class MemberTest {
 
 	@BeforeEach
 	void setUp () {
-		this.passwordEncoder = new PasswordEncoder() {
-			@Override
-			public String encode (String password) {
-				return password.toUpperCase();
-			}
-
-			@Override
-			public boolean matches (String password, String passwordHash) {
-				return encode(password).equals(passwordHash);
-			}
-		};
-		this.member = Member.create(new MemberCreateReqeust(
-						"test@test.com",
-						"test-nickname",
-						"original-password"),
+		this.passwordEncoder = createPasswordEncoder();
+		this.member = Member.register(createMemberRegisterRequest(),
 				passwordEncoder
 		);
 	}
@@ -64,13 +52,13 @@ class MemberTest {
 
 	@Test
 	void verifyPassword () {
-		assertThat(member.verifyPassword("original-password", passwordEncoder)).isTrue();
+		assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
 		assertThat(member.verifyPassword("invalid-password", passwordEncoder)).isFalse();
 	}
 
 	@Test
 	void changeNickname () {
-		assertThat(member.getNickname()).isEqualTo("test-nickname");
+		assertThat(member.getNickname()).isEqualTo("nickname");
 
 		member.changeNickname("potato");
 
@@ -100,10 +88,11 @@ class MemberTest {
 	@Test
 	void invalidEmail () {
 		assertThatThrownBy(
-				() -> Member.create(
-						new MemberCreateReqeust("invalidEmail", "nickname", "secret"),
+				() -> Member.register(
+						createMemberRegisterReqeust("invalidEmail"),
 						passwordEncoder
 				)
 		).isInstanceOf(Exception.class);
 	}
+
 }
