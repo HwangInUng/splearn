@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import study.splearn.application.provided.MemberRegister;
 import study.splearn.application.required.EmailSender;
 import study.splearn.application.required.MemberRepository;
-import study.splearn.domain.Member;
-import study.splearn.domain.MemberRegisterRequest;
-import study.splearn.domain.PasswordEncoder;
+import study.splearn.domain.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +16,27 @@ public class MemberService implements MemberRegister {
 
 	@Override
 	public Member register (MemberRegisterRequest registerRequest) {
-		// check logic
+		checkDuplicateEmail(registerRequest.email());
 
 		Member member = Member.register(registerRequest, passwordEncoder);
 
 		memberRepository.save(member);
+		sendRegistEmail(member);
+
+		return member;
+	}
+
+	private void sendRegistEmail (Member member) {
 		emailSender.send(
 				member.getEmail(),
 				"등록을 완료해주세요.",
 				"아래 링크를 클릭하여 등록을 완료해주세요."
 		);
+	}
 
-		return member;
+	private void checkDuplicateEmail (String email) {
+		if(memberRepository.findByEmail(new Email(email)).isPresent()) {
+			throw new DuplicateEmailException("이미 존재하는 이메일입니다. :: " + email);
+		}
 	}
 }

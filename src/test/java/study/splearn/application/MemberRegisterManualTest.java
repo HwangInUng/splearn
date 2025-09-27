@@ -3,6 +3,7 @@ package study.splearn.application;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.yaml.snakeyaml.emitter.Emitable;
 import study.splearn.application.provided.MemberRegister;
 import study.splearn.application.required.EmailSender;
 import study.splearn.application.required.MemberRepository;
@@ -12,6 +13,7 @@ import study.splearn.domain.MemberStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static study.splearn.domain.MemberFixture.createMemberRegisterRequest;
 import static study.splearn.domain.MemberFixture.createPasswordEncoder;
 
-class MemberServiceTest {
+class MemberRegisterManualTest {
 	@Test
 	void registerTestStub () {
 		MemberRegister memberRegister = new MemberService(
@@ -76,6 +78,11 @@ class MemberServiceTest {
 		public Member save (Member member) {
 			ReflectionTestUtils.setField(member, "id", 1L);
 			return member;
+		}
+
+		@Override
+		public Optional<Member> findByEmail (Email email) {
+			return Optional.empty();
 		}
 	}
 
