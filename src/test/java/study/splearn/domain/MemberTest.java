@@ -24,10 +24,10 @@ class MemberTest {
 				return encode(password).equals(passwordHash);
 			}
 		};
-		this.member = Member.create(
-				"test@test.com",
-				"test-nickname",
-				"original-password",
+		this.member = Member.create(new MemberCreateReqeust(
+						"test@test.com",
+						"test-nickname",
+						"original-password"),
 				passwordEncoder
 		);
 	}
@@ -70,7 +70,7 @@ class MemberTest {
 
 	@Test
 	void changeNickname () {
-	    assertThat(member.getNickname()).isEqualTo("test-nickname");
+		assertThat(member.getNickname()).isEqualTo("test-nickname");
 
 		member.changeNickname("potato");
 
@@ -79,8 +79,21 @@ class MemberTest {
 
 	@Test
 	void changePassword () {
-	    member.changePassword("very-secret", passwordEncoder);
+		member.changePassword("very-secret", passwordEncoder);
 
 		assertThat(member.verifyPassword("very-secret", passwordEncoder)).isTrue();
+	}
+
+	@Test
+	void isActive () {
+		assertThat(member.isActive()).isFalse();
+
+		member.activate();
+
+		assertThat(member.isActive()).isTrue();
+
+		member.deactivate();
+
+		assertThat(member.isActive()).isFalse();
 	}
 }
