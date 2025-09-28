@@ -1,5 +1,6 @@
 package study.splearn.application.provided;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Transactional
 @Import(SplearnTestConfiguration.class)
 record MemberRegisterTest(
-		MemberRegister memberRegister
+		MemberRegister memberRegister,
+		EntityManager entityManager
 ) {
 	@Test
 	void register () {
@@ -43,6 +45,19 @@ record MemberRegisterTest(
 	void memberRegisterRequestFail () {
 		extracted(new MemberRegisterRequest("test@test.com", "nic", "longsecret"));
 		extracted(new MemberRegisterRequest("test@test.com", "t".repeat(21), "longsecret"));
+	}
+
+	@Test
+	void activate () {
+	    Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+		entityManager.flush();
+		entityManager.clear();
+
+		member = memberRegister.activate(member.getId());
+
+		entityManager.flush();
+
+		assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
 	}
 
 	private void extracted (MemberRegisterRequest invalidRequest) {
