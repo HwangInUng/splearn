@@ -52,7 +52,7 @@ class MemberTest {
 
 	@Test
 	void verifyPassword () {
-		assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+		assertThat(member.verifyPassword("long-secret", passwordEncoder)).isTrue();
 		assertThat(member.verifyPassword("invalid-password", passwordEncoder)).isFalse();
 	}
 
