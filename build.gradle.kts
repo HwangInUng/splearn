@@ -25,6 +25,8 @@ repositories {
     mavenCentral()
 }
 
+var mockitoAgent: Configuration = configurations.create("mockitoAgent")
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -34,10 +36,15 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.projectlombok:lombok")
+
+    // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockito:mockito-core:5.18.0")
+    mockitoAgent("org.mockito:mockito-core:5.18.0") { isTransitive = false }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }

@@ -3,18 +3,13 @@ package study.splearn.application.provided;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import study.splearn.SplearnTestConfiguration;
 import study.splearn.domain.*;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -43,8 +38,8 @@ record MemberRegisterTest(
 
 	@Test
 	void memberRegisterRequestFail () {
-		extracted(new MemberRegisterRequest("test@test.com", "nic", "longsecret"));
-		extracted(new MemberRegisterRequest("test@test.com", "t".repeat(21), "longsecret"));
+		checkValidation(new MemberRegisterRequest("test@test.com", "nic", "longsecret"));
+		checkValidation(new MemberRegisterRequest("test@test.com", "t".repeat(21), "longsecret"));
 	}
 
 	@Test
@@ -60,7 +55,7 @@ record MemberRegisterTest(
 		assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
 	}
 
-	private void extracted (MemberRegisterRequest invalidRequest) {
+	private void checkValidation (MemberRegisterRequest invalidRequest) {
 		assertThatThrownBy(
 				() -> memberRegister.register(invalidRequest)
 		).isInstanceOf(ConstraintViolationException.class);
