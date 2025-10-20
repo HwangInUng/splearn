@@ -14,7 +14,6 @@ import static org.springframework.util.Assert.state;
 @Entity
 @Getter
 @ToString
-@NaturalIdCache
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 	@NaturalId
