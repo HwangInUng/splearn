@@ -14,7 +14,7 @@ import static org.springframework.util.Assert.state;
 
 @Entity
 @Getter
-@ToString
+@ToString(callSuper = true, exclude = "detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 	@NaturalId
@@ -26,7 +26,7 @@ public class Member extends BaseEntity {
 
 	private MemberStatus status;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private MemberDetail detail;
 
 	public static Member register (MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
@@ -37,6 +37,8 @@ public class Member extends BaseEntity {
 		member.passwordHash = requireNonNull(passwordEncoder.encode(registerRequest.passwordHash()));
 		member.status = MemberStatus.PENDING;
 
+		member.detail = MemberDetail.create();
+
 		return member;
 	}
 
@@ -44,12 +46,14 @@ public class Member extends BaseEntity {
 		state(status == MemberStatus.PENDING, "대기 상태가 아닙니다.");
 
 		this.status = MemberStatus.ACTIVE;
+		this.detail.activatedAt();
 	}
 
 	public void deactivate () {
 		state(status == MemberStatus.ACTIVE, "활성 상태가 아닙니다.");
 
 		this.status = MemberStatus.DEACTIVATED;
+		this.detail.deactivate();
 	}
 
 	public boolean verifyPassword (String password, PasswordEncoder passwordEncoder) {
@@ -59,6 +63,12 @@ public class Member extends BaseEntity {
 	public void changeNickname (String nickname) {
 		this.nickname = requireNonNull(nickname);
 	}
+
+	public void updateInfo(MemberInfoUpdateReqeust updateReqeust) {
+		this.nickname = requireNonNull(updateReqeust.nickname());
+
+		this.detail.updateInfo(updateReqeust);
+	};
 
 	public void changePassword (String password, PasswordEncoder passwordEncoder) {
 		this.passwordHash = passwordEncoder.encode(requireNonNull(password));

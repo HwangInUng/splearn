@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import study.splearn.domain.member.Member;
+import study.splearn.domain.member.MemberStatus;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static study.splearn.domain.member.MemberFixture.createMemberRegisterRequest;
@@ -27,9 +29,15 @@ class MemberRepositoryTest {
 		assertThat(member.getId()).isNull();
 
 		memberRepository.save(member);
-		entityManager.flush();
 
 		assertThat(member.getId()).isNotNull();
+
+		entityManager.flush();
+		entityManager.clear();
+
+		var found = memberRepository.findById(member.getId()).orElseThrow();
+		assertThat(found.getStatus()).isEqualTo(MemberStatus.PENDING);
+		assertThat(found.getDetail().getRegisteredAt()).isNotNull();
 	}
 
 	@Test
