@@ -4,7 +4,6 @@ package study.splearn.domain.member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static study.splearn.domain.member.MemberFixture.*;
@@ -66,15 +65,6 @@ class MemberTest {
 	}
 
 	@Test
-	void changeNickname () {
-		assertThat(member.getNickname()).isEqualTo("nickname");
-
-		member.changeNickname("potato");
-
-		assertThat(member.getNickname()).isEqualTo("potato");
-	}
-
-	@Test
 	void changePassword () {
 		member.changePassword("very-secret", passwordEncoder);
 
@@ -108,12 +98,21 @@ class MemberTest {
 	void updateInfo () {
 		member.activate();
 
-		var request = new MemberInfoUpdateReqeust("Leo", "iwhwang100", "테스트 소개");
+		var request = new MemberInfoUpdateRequest("iwhwang", "iwhwang100", "테스트 소개");
 		member.updateInfo(request);
 
 		assertThat(member.getNickname()).isEqualTo(request.nickname());
 		assertThat(member.getDetail().getProfile().address()).isEqualTo(request.profileAddress());
 		assertThat(member.getDetail().getIntroduction()).isEqualTo(request.introduction());
 
+	}
+
+	@Test
+	void updateInfoFail () {
+		var request = new MemberInfoUpdateRequest("iwhwang", "iwhwang100", "테스트 소개");
+
+	    assertThatThrownBy(
+				() -> member.updateInfo(request)
+		).isInstanceOf(IllegalStateException.class);
 	}
 }

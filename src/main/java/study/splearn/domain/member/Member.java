@@ -26,7 +26,6 @@ public class Member extends BaseEntity {
 
 	private MemberStatus status;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private MemberDetail detail;
 
 	public static Member register (MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
@@ -60,11 +59,8 @@ public class Member extends BaseEntity {
 		return passwordEncoder.matches(password, this.passwordHash);
 	}
 
-	public void changeNickname (String nickname) {
-		this.nickname = requireNonNull(nickname);
-	}
-
-	public void updateInfo(MemberInfoUpdateReqeust updateReqeust) {
+	public void updateInfo(MemberInfoUpdateRequest updateReqeust) {
+		state(status == MemberStatus.ACTIVE, "활성 상태가 아닙니다.");
 		this.nickname = requireNonNull(updateReqeust.nickname());
 
 		this.detail.updateInfo(updateReqeust);

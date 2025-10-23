@@ -7,9 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import study.splearn.SplearnTestConfiguration;
+import study.splearn.domain.member.DuplicateProfileException;
 import study.splearn.domain.member.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
@@ -44,20 +46,113 @@ record MemberRegisterTest(
 
 	@Test
 	void activate () {
-	    Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
-		entityManager.flush();
-		entityManager.clear();
+		Member member = registerMember();
 
 		member = memberRegister.activate(member.getId());
 
 		entityManager.flush();
 
 		assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+		assertThat(member.getDetail().getActivatedAt()).isNotNull();
+	}
+
+	@Test
+	void deactivate () {
+		Member member = registerMember();
+
+		memberRegister.activate(member.getId());
+		entityManager.flush();
+		entityManager.clear();
+
+		member = memberRegister.deactivate(member.getId());
+
+		assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+		assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
+	}
+
+	@Test
+	void updateInfo () {
+		Member member = registerMember();
+
+		memberRegister.activate(member.getId());
+		entityManager.flush();
+		entityManager.clear();
+
+		var updateRequest = new MemberInfoUpdateRequest("iwhwang", "iwhwang100", "테스트 소개");
+		member = memberRegister.updateInfo(member.getId(), updateRequest);
+
+		assertThat(member.getDetail().getProfile().address()).isEqualTo("iwhwang100");
+	}
+
+	@Test
+	void updateInfoFail () {
+		Member member = registerMember();
+
+		memberRegister.activate(member.getId());
+		memberRegister.updateInfo(
+				member.getId(),
+				new MemberInfoUpdateRequest("iwhwang", "iwhwang100", "테스트 소개1")
+		);
+
+		Member member2 = registerMember("ung0000@gmail.com");
+		memberRegister.activate(member2.getId());
+		entityManager.flush();
+		entityManager.clear();
+
+		// member2는 기존의 member와 같은 프로필 주소를 사용할 수 없다.
+		assertThatThrownBy(() ->
+				memberRegister.updateInfo(
+						member2.getId(),
+						new MemberInfoUpdateRequest("hwang", "iwhwang100", "테스트 소개2")
+				)
+		).isInstanceOf(DuplicateProfileException.class);
+
+		// 다른 프로필 주소로는 변경 가능
+		memberRegister.updateInfo(
+				member2.getId(),
+				new MemberInfoUpdateRequest("hwang", "iwhwang101", "테스트 소개2")
+		);
+
+		// 기존 프로필 주소를 바꾸는 것도 가능
+		memberRegister.updateInfo(
+				member.getId(),
+				new MemberInfoUpdateRequest("hwang", "iwhwang100", "테스트 소개2")
+		);
+
+		// 프로필 주소를 제거하는 것도 가능
+		memberRegister.updateInfo(
+				member.getId(),
+				new MemberInfoUpdateRequest("hwang", "", "테스트 소개2")
+		);
+
+		// 프로필 주소 중복은 허용하지 않음
+		assertThatThrownBy(() ->
+				memberRegister.updateInfo(
+						member.getId(),
+						new MemberInfoUpdateRequest("hwang", "iwhwang101", "테스트 소개2")
+				)
+		).isInstanceOf(DuplicateProfileException.class);
 	}
 
 	private void checkValidation (MemberRegisterRequest invalidRequest) {
 		assertThatThrownBy(
 				() -> memberRegister.register(invalidRequest)
 		).isInstanceOf(ConstraintViolationException.class);
+	}
+
+	private Member registerMember () {
+		Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+		entityManager.flush();
+		entityManager.clear();
+
+		return member;
+	}
+
+	private Member registerMember (String email) {
+		Member member = memberRegister.register(MemberFixture.createMemberRegisterReqeust(email));
+		entityManager.flush();
+		entityManager.clear();
+
+		return member;
 	}
 }

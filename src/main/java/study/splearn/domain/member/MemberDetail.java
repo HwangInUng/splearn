@@ -48,7 +48,7 @@ public class MemberDetail extends BaseEntity {
 		this.deactivatedAt = LocalDateTime.now();
 	}
 
-	public void updateInfo (MemberInfoUpdateReqeust updateReqeust) {
+	public void updateInfo (MemberInfoUpdateRequest updateReqeust) {
 		this.profile = new Profile(updateReqeust.profileAddress());
 		this.introduction = requireNonNull(updateReqeust.introduction());
 	}
