@@ -2,9 +2,9 @@ package study.splearn;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import study.splearn.application.required.EmailSender;
-import study.splearn.domain.MemberFixture;
-import study.splearn.domain.PasswordEncoder;
+import study.splearn.application.member.required.EmailSender;
+import study.splearn.domain.member.MemberFixture;
+import study.splearn.domain.member.PasswordEncoder;
 
 /**
  * 해당 클래스에 선언한 빈이 테스트에서는 우선적으로 동작한다.

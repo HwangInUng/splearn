@@ -1,6 +1,6 @@
-package study.splearn.application.required;
+package study.splearn.application.member.required;
 
-import study.splearn.domain.Email;
+import study.splearn.domain.shared.Email;
 
 /**
  * 이메일을 발송한다.

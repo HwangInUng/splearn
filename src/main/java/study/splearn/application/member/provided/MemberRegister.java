@@ -1,8 +1,8 @@
-package study.splearn.application.provided;
+package study.splearn.application.member.provided;
 
 import jakarta.validation.Valid;
-import study.splearn.domain.Member;
-import study.splearn.domain.MemberRegisterRequest;
+import study.splearn.domain.member.Member;
+import study.splearn.domain.member.MemberRegisterRequest;
 
 /**
  * 회원의 등록과 관련된 기능을 제공한다.

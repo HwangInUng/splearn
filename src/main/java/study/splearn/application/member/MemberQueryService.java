@@ -1,12 +1,12 @@
-package study.splearn.application;
+package study.splearn.application.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import study.splearn.application.provided.MemberFinder;
-import study.splearn.application.required.MemberRepository;
-import study.splearn.domain.Member;
+import study.splearn.application.member.provided.MemberFinder;
+import study.splearn.application.member.required.MemberRepository;
+import study.splearn.domain.member.Member;
 
 @Service
 @Validated

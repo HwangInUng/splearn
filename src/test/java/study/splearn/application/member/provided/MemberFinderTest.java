@@ -1,4 +1,4 @@
-package study.splearn.application.provided;
+package study.splearn.application.member.provided;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import study.splearn.SplearnTestConfiguration;
-import study.splearn.domain.Member;
-import study.splearn.domain.MemberFixture;
+import study.splearn.domain.member.Member;
+import study.splearn.domain.member.MemberFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

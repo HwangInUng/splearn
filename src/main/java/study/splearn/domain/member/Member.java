@@ -1,4 +1,4 @@
-package study.splearn.domain;
+package study.splearn.domain.member;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
+import study.splearn.domain.BaseEntity;
+import study.splearn.domain.shared.Email;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.Assert.state;
@@ -24,6 +25,9 @@ public class Member extends BaseEntity {
 	private String passwordHash;
 
 	private MemberStatus status;
+
+	@OneToOne
+	private MemberDetail detail;
 
 	public static Member register (MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
 		Member member = new Member();

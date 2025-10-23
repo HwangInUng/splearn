@@ -1,8 +1,8 @@
 package study.splearn.adapter.integration;
 
 import org.springframework.stereotype.Component;
-import study.splearn.application.required.EmailSender;
-import study.splearn.domain.Email;
+import study.splearn.application.member.required.EmailSender;
+import study.splearn.domain.shared.Email;
 
 @Component
 public class DummyEmailSender implements EmailSender {

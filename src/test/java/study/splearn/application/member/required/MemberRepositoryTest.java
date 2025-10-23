@@ -1,16 +1,16 @@
-package study.splearn.application.required;
+package study.splearn.application.member.required;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import study.splearn.domain.Member;
+import study.splearn.domain.member.Member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static study.splearn.domain.MemberFixture.createMemberRegisterRequest;
-import static study.splearn.domain.MemberFixture.createPasswordEncoder;
+import static study.splearn.domain.member.MemberFixture.createMemberRegisterRequest;
+import static study.splearn.domain.member.MemberFixture.createPasswordEncoder;
 
 @DataJpaTest
 class MemberRepositoryTest {
