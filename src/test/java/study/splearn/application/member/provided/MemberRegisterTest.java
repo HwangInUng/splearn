@@ -149,7 +149,7 @@ record MemberRegisterTest(
 	}
 
 	private Member registerMember (String email) {
-		Member member = memberRegister.register(MemberFixture.createMemberRegisterReqeust(email));
+		Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest(email));
 		entityManager.flush();
 		entityManager.clear();
 

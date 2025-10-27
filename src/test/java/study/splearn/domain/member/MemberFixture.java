@@ -1,12 +1,14 @@
 package study.splearn.domain.member;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 public class MemberFixture {
-	public static MemberRegisterRequest createMemberRegisterReqeust (String email) {
+	public static MemberRegisterRequest createMemberRegisterRequest (String email) {
 		return new MemberRegisterRequest(email, "nickname", "long-secret");
 	}
 
 	public static MemberRegisterRequest createMemberRegisterRequest () {
-		return createMemberRegisterReqeust("test@test.com");
+		return createMemberRegisterRequest("test@test.com");
 	}
 
 	public static PasswordEncoder createPasswordEncoder () {
@@ -21,5 +23,20 @@ public class MemberFixture {
 				return encode(password).equals(passwordHash);
 			}
 		};
+	}
+
+	public static Member createMember () {
+		return Member.register(createMemberRegisterRequest(), createPasswordEncoder());
+	}
+
+	public static Member createMember (String email) {
+		return Member.register(createMemberRegisterRequest(email), createPasswordEncoder());
+	}
+
+	public static Member createMember (Long memberId) {
+		Member member = Member.register(createMemberRegisterRequest(), createPasswordEncoder());
+		ReflectionTestUtils.setField(member, "id", memberId);
+
+		return member;
 	}
 }

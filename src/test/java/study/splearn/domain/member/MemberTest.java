@@ -88,7 +88,7 @@ class MemberTest {
 	void invalidEmail () {
 		assertThatThrownBy(
 				() -> Member.register(
-						createMemberRegisterReqeust("invalidEmail"),
+						createMemberRegisterRequest("invalidEmail"),
 						passwordEncoder
 				)
 		).isInstanceOf(Exception.class);
