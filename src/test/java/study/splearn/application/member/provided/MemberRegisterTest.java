@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import study.splearn.SplearnTestConfiguration;
+import study.splearn.domain.member.MemberRegisterRequest;
 import study.splearn.domain.member.DuplicateProfileException;
 import study.splearn.domain.member.*;
 
